@@ -30,7 +30,7 @@ jobs:
         run: |
           sudo pip3 install --upgrade setuptools pip
           sudo pip3 install conan
-      - run: conan remote add osp https://osp.jfrog.io/artifactory/api/conan/ais-conan --force
+      - run: conan remote add ais https://osp.jfrog.io/artifactory/api/conan/ais-conan --force
       - run: conan create -s build_type=${{ matrix.build_type }} -s compiler.version=${{ matrix.compiler_version }} -s compiler.libcxx=${{ matrix.compiler_libcxx }} -o fmilibrary:shared=${{ matrix.option_shared }} . _/_
       - run: conan upload --all -c -r ais 'fmilibrary*'
 
