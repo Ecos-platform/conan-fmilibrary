@@ -4,8 +4,8 @@ name: conan-fmilibrary CI Conan
 on: [push, workflow_dispatch]
 
 env:
-  CONAN_LOGIN_USERNAME_OSP: ${{ secrets.osp_artifactory_usr }}
-  CONAN_PASSWORD_OSP: ${{ secrets.osp_artifactory_pwd }}
+  CONAN_LOGIN_USERNAME_AIS: ${{ secrets.CONAN_LOGIN_USERNAME_AIS }}
+  CONAN_PASSWORD_AIS: ${{ secrets.CONAN_PASSWORD_AIS }}
   CONAN_REVISIONS_ENABLED: 1
   CONAN_NON_INTERACTIVE: True
 
@@ -21,19 +21,18 @@ jobs:
       matrix:
         os: [ubuntu-18.04]
         build_type: [Debug, Release]
-        compiler_version: [7, 8, 9]
+        compiler_version: [7, 9]
         compiler_libcxx: [libstdc++11]
         option_shared: ['True', 'False']
     steps:
       - uses: actions/checkout@v2
       - name: Install prerequisites
         run: |
-          sudo apt-get install -y --no-install-recommends g++-8
           sudo pip3 install --upgrade setuptools pip
           sudo pip3 install conan
-      - run: conan remote add osp https://osp.jfrog.io/artifactory/api/conan/conan-local --force
+      - run: conan remote add osp https://osp.jfrog.io/artifactory/api/conan/ais-conan --force
       - run: conan create -s build_type=${{ matrix.build_type }} -s compiler.version=${{ matrix.compiler_version }} -s compiler.libcxx=${{ matrix.compiler_libcxx }} -o fmilibrary:shared=${{ matrix.option_shared }} . _/_
-      - run: conan upload --all -c -r osp 'fmilibrary*'
+      - run: conan upload --all -c -r ais 'fmilibrary*'
 
   conan-on-windows:
     name: Conan
@@ -53,6 +52,6 @@ jobs:
         run: |
           pip3 install --upgrade setuptools pip
           pip3 install conan
-      - run: conan remote add osp https://osp.jfrog.io/artifactory/api/conan/conan-local --force
+      - run: conan remote add ais https://osp.jfrog.io/artifactory/api/conan/ais-conan --force
       - run: conan create -s build_type=${{ matrix.build_type }} -o fmilibrary:shared=${{ matrix.option_shared }} . _/_
-      - run: conan upload --all -c -r osp 'fmilibrary*'
+      - run: conan upload --all -c -r ais 'fmilibrary*'
