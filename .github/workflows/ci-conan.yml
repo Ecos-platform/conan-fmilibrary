@@ -11,17 +11,15 @@ env:
 
 jobs:
   conan-on-linux:
-    name: Conan
     runs-on: ${{ matrix.os }}
     env:
       CC: gcc-${{ matrix.compiler_version }}
       CXX: g++-${{ matrix.compiler_version }}
     strategy:
-      fail-fast: false
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
         build_type: [Debug, Release]
-        compiler_version: [7, 9]
+        compiler_version: [9]
         compiler_libcxx: [libstdc++11]
         option_shared: ['True', 'False']
     steps:
@@ -35,13 +33,11 @@ jobs:
       - run: conan upload --all -c -r ais 'fmilibrary*'
 
   conan-on-windows:
-    name: Conan
     runs-on: ${{ matrix.os }}
     env:
       CONAN_USER_HOME_SHORT: C:\c
       CONAN_USE_ALWAYS_SHORT_PATHS: 1
     strategy:
-      fail-fast: false
       matrix:
         os: [windows-2019, windows-2022]
         build_type: [Debug, Release]
